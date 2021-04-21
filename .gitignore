@@ -1,0 +1,5 @@
+.prettierrc
+node_modules/
+todos.md
+.vscode
+.codesandbox
