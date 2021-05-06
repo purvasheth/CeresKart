@@ -246,7 +246,6 @@
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding-bottom: 1rem;
 }
 
 .position-badge--smaller {
@@ -256,6 +255,15 @@
   height: 0.65rem;
   top: 0.25rem;
   right: -1rem;
+}
+
+.btn--signout {
+  margin-bottom: 1rem;
+  padding: 0.5em 1em;
+  font-size: 1rem;
+  background-color: white;
+  font-weight: 700;
+  color: var(--primary);
 }
 
 @media (min-width:700px) {
@@ -270,6 +278,11 @@
   .position-badge--smaller {
     top: 0.25rem;
     right: 0rem;
+  }
+
+  .btn--signout {
+    margin-bottom: 0;
+    margin-left: 1rem;
   }
 }
 

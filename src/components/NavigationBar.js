@@ -7,9 +7,11 @@ import { useProducts } from "../pages/Products/products-context";
 import { API_CART, API_PRODUCTS, API_WISHLIST } from "../urls";
 import { SET_CART_ITEMS, SET_WISHLIST_ITEMS } from "../pages/data-reducer";
 import { SET_PRODUCTS } from "../pages/Products/products-reducer";
+import { useAuth } from "../pages/Auth/auth-context";
 
 function Navigation({ expandNavbar }) {
   const { cartItems, wishlist } = useData();
+  const { isLogin, signoutUser } = useAuth();
 
   return (
     <nav className={`nav ${expandNavbar ? "" : "nav-hide"}`}>
@@ -25,13 +27,22 @@ function Navigation({ expandNavbar }) {
           <NotificationBadge length={cartItems.length} />
         </NavigationItem>
       </ul>
+      <div className="nav__search-bar">
+        {isLogin && (
+          <button className="btn btn--signout" onClick={signoutUser}>
+            SIGNOUT
+          </button>
+        )}
+      </div>
     </nav>
   );
 }
 
 function NotificationBadge({ length }) {
+  const { isLogin } = useAuth();
   return (
-    length !== 0 && (
+    length !== 0 &&
+    isLogin && (
       <span className="badge--smaller position-badge--smaller bg-red-600">
         {length}
       </span>
