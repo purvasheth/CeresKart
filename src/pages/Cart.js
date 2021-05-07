@@ -9,7 +9,11 @@ import { useAxios } from "../useAxios";
 import { makeBackroundUnscrollable } from "../utils";
 
 const getAmount = (items) => {
-  return items.reduce((total, { price, qty }) => total + price * qty, 0);
+  return items.reduce(
+    (total, { price, qty, discount }) =>
+      total + Math.round(price - price * 0.01 * discount) * qty,
+    0
+  );
 };
 
 const OperationButton = ({ type, id, qty }) => {

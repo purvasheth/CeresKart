@@ -52,7 +52,6 @@ export const CardBody = ({
   image,
   price,
   rating,
-  inStock,
   discount,
   category,
   fastDelivery,
