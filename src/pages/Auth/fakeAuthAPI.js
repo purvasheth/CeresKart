@@ -21,7 +21,6 @@ export const fakeAuthAPI = (username, password) => {
     setTimeout(() => {
       const user = findUserByUserName(username);
       const inputPassword = get(user, "password");
-      console.log(user, inputPassword);
       if (inputPassword === password) {
         resolve({ success: true, status: 200 });
       }

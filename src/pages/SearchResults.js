@@ -13,7 +13,6 @@ export function SearchResults() {
   const searchString = new URLSearchParams(useLocation().search).get(
     "searchString"
   );
-  console.log(searchString);
   const { productsState } = useProducts();
   return (
     <div className="container">
