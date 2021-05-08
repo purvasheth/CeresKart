@@ -9,7 +9,8 @@ import { Card, CardBody, CardFooter } from "../../components/Card";
 import { AddToCartButton } from "../../components/AddToCartButton";
 import { useState } from "react";
 import { WishlistButton } from "../../components/WishlistButton";
-import { useLocation, useParams } from "react-router";
+import { useParams } from "react-router";
+import { categories } from "../Home/home-data";
 
 const highToLow = "highToLow";
 const lowToHigh = "lowToHigh";
@@ -152,7 +153,7 @@ export function Products() {
   const { categoryName: category } = useParams();
   let banner;
   if (category) {
-    banner = useLocation().state.banner;
+    banner = categories.find(({ name }) => name === category)?.banner;
   }
   const { productsState } = useProducts();
 

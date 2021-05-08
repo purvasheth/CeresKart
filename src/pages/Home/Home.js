@@ -47,16 +47,13 @@ function Caraousel() {
   );
 }
 
-function CategoryCard({ name, banner, thumbnail }) {
+function CategoryCard({ name, thumbnail }) {
   const navigate = useNavigate();
-  const navigateToProductListing = ({ name, banner }) => {
-    navigate(`products/category/${name}`, { state: { banner } });
+  const navigateToProductListing = (name) => {
+    navigate(`products/category/${name}`);
   };
   return (
-    <div
-      className="clickable"
-      onClick={() => navigateToProductListing({ name, banner })}
-    >
+    <div className="clickable" onClick={() => navigateToProductListing(name)}>
       <h3 className="font--primary font--center flex-grow"> {name} </h3>
       <img className="img img--round img--scale" src={thumbnail} alt={name} />
     </div>

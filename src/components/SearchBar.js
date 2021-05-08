@@ -1,18 +1,24 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const SearchBar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchString, setSearchString] = useState("");
+  const [prevLocation, setPrevLocation] = useState("/");
+
   const searchResultsOnEnter = (e) => {
     if (e.key === "Enter") {
+      if (location.pathname !== "/search") {
+        setPrevLocation(location.pathname);
+      }
       navigate(`/search?searchString=${encodeURI(searchString)}`);
     }
   };
 
   const clearSearchResults = () => {
     setSearchString("");
-    navigate(-1);
+    navigate(prevLocation);
   };
 
   return (
@@ -32,6 +38,7 @@ export const SearchBar = () => {
       <button
         className="btn-close close-icon btn-lg"
         onClick={clearSearchResults}
+        disabled={!searchString}
       >
         <i className="fa fa-times" />
       </button>
