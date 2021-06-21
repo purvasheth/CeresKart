@@ -9,7 +9,9 @@ import { NavigationBar } from "./components/NavigationBar";
 import { Routes, Route } from "react-router-dom";
 import { NotFound } from "./pages/NotFound";
 import { Login } from "./pages/Auth/Login";
+import { Signup } from "./pages/Auth/Signup";
 import { PrivateRoute } from "./pages/Auth/PrivateRoute";
+import { ResetPassword } from "./pages/Auth/ResetPassword";
 
 export default function App() {
   return (
@@ -28,6 +30,8 @@ export default function App() {
             element={<Products />}
           />
           <Route path="/products" element={<Products />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>

@@ -1,46 +1,72 @@
 import { createContext, useContext, useEffect } from "react";
 import { useState } from "react";
-import { errorToast } from "../../components/toasts";
-import { fakeAuthAPI } from "./fakeAuthAPI";
+import {
+  loginService,
+  resetPasswordService,
+  signupService,
+} from "./auth-services";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isLogin, setIsLogin] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (localStorage) {
-      const loginStatus = JSON.parse(localStorage?.getItem("login"));
-      setIsLogin(loginStatus);
+  const [token, setToken] = useState("");
+  async function loginUser(email, password) {
+    const response = await loginService(email, password);
+    if ("errors" in response) {
+      return { errors: response.errors };
     }
-  }, []);
-
-  async function loginUser(username, password) {
-    try {
-      setIsLoading(true);
-      const response = await fakeAuthAPI(username, password);
-      if (response.success) {
-        setIsLogin(true);
-        if (localStorage) {
-          localStorage.setItem("login", JSON.stringify(true));
-        }
-        setIsLoading(false);
-        return "success";
+    if ("token" in response) {
+      setToken(response.token);
+      if (localStorage) {
+        localStorage.setItem("token", response.token);
       }
-    } catch (error) {
-      errorToast("Invalid username or password");
+      return true;
+    }
+    return false;
+  }
+
+  async function resetPassword(email, password) {
+    const response = await resetPasswordService(email, password);
+    if ("errors" in response) {
+      return { errors: response.errors };
+    }
+    if ("message" in response && response.message === "success") {
+      return true;
     }
   }
 
-  function signoutUser() {
-    setIsLogin(false);
-    localStorage.setItem("login", JSON.stringify(false));
+  async function signupUser(user) {
+    const response = await signupService(user);
+    if ("errors" in response) {
+      return { errors: response.errors };
+    }
+    if ("token" in response) {
+      setToken(response.token);
+      if (localStorage) {
+        localStorage.setItem("token", response.token);
+      }
+      return true;
+    }
+    return false;
+  }
+
+  function logoutUser() {
+    setToken("");
+    if (localStorage) {
+      localStorage.removeItem("token");
+    }
   }
 
   return (
     <AuthContext.Provider
-      value={{ isLogin, loginUser, signoutUser, isLoading }}
+      value={{
+        token,
+        loginUser,
+        signupUser,
+        resetPassword,
+        logoutUser,
+        setToken,
+      }}
     >
       {children}
     </AuthContext.Provider>

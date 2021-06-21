@@ -21,7 +21,7 @@ export const DeleteModal = ({ onCancel, onDelete, calledFrom }) => {
                 className="btn bg-red-600 btn-sm ml-1"
                 onClick={onDelete}
               >
-                Delete
+                Remove
               </button>
             </div>
           </div>

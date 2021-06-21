@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { errorToast, successToast } from "./components/toasts";
+import { useAuth } from "./pages/Auth/auth-context";
 
 const getMainURL = (url) => {
   return url.split("/")[3];
@@ -8,7 +9,8 @@ const getMainURL = (url) => {
 
 export const useAxios = (url) => {
   const [isLoading, setIsLoading] = useState(false);
-
+  const { token } = useAuth();
+  const config = token ? { headers: { token } } : {};
   async function genericRequest(callback, successMessage) {
     try {
       setIsLoading(true);
@@ -26,21 +28,21 @@ export const useAxios = (url) => {
 
   async function getData() {
     return genericRequest(async () => {
-      const response = await axios.get(url);
+      const response = await axios.get(url, config);
       return response.data;
     });
   }
 
   async function postData(newItem) {
     return genericRequest(async () => {
-      const response = await axios.post(url, newItem);
+      const response = await axios.post(url, newItem, config);
       return response.data;
     }, `${newItem.name} added to your ${getMainURL(url)}`);
   }
 
   async function deleteData({ id, name }, showMessage = true) {
     const deleteRequest = async () => {
-      const response = await axios.delete(`${url}/${id}`);
+      const response = await axios.delete(`${url}/${id}`, config);
       if (response.status === 204) {
         return "success";
       }
@@ -55,7 +57,7 @@ export const useAxios = (url) => {
   }
   async function updateData(id, body) {
     const updateRequest = async () => {
-      const response = await axios.post(`${url}/${id}`, body);
+      const response = await axios.post(`${url}/${id}`, body, config);
       if (response.status === 201) {
         return response.data;
       }

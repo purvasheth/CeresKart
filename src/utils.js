@@ -1,4 +1,5 @@
 export const checkItem = (array, id) => {
+  console.log(array);
   return !!array.find((item) => item.id === id);
 };
 

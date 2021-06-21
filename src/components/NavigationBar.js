@@ -8,10 +8,11 @@ import { API_CART, API_PRODUCTS, API_WISHLIST } from "../urls";
 import { SET_CART_ITEMS, SET_WISHLIST_ITEMS } from "../pages/data-reducer";
 import { SET_PRODUCTS } from "../pages/Products/products-reducer";
 import { useAuth } from "../pages/Auth/auth-context";
+import { validateTokenService } from "../pages/Auth/auth-services";
 
 function Navigation({ expandNavbar }) {
   const { cartItems, wishlist } = useData();
-  const { isLogin, signoutUser } = useAuth();
+  const { token, logoutUser } = useAuth();
 
   return (
     <nav className={`nav ${expandNavbar ? "" : "nav-hide"}`}>
@@ -28,9 +29,9 @@ function Navigation({ expandNavbar }) {
         </NavigationItem>
       </ul>
       <div className="nav__search-bar">
-        {isLogin && (
-          <button className="btn btn--signout" onClick={signoutUser}>
-            SIGNOUT
+        {token && (
+          <button className="btn btn--signout" onClick={logoutUser}>
+            LOG OUT
           </button>
         )}
       </div>
@@ -39,15 +40,12 @@ function Navigation({ expandNavbar }) {
 }
 
 function NotificationBadge({ length }) {
-  const { isLogin } = useAuth();
-  return (
-    length !== 0 &&
-    isLogin && (
-      <span className="badge--smaller position-badge--smaller bg-red-600">
-        {length}
-      </span>
-    )
-  );
+  const { token } = useAuth();
+  return length !== 0 && token ? (
+    <span className="badge--smaller position-badge--smaller bg-red-600">
+      {length}
+    </span>
+  ) : null;
 }
 
 function NavigationItem({ route, children }) {
@@ -93,23 +91,34 @@ export function NavigationBar() {
   const { getData: getWishlistData } = useAxios(API_WISHLIST);
   const { getData: getProductsData } = useAxios(API_PRODUCTS);
   const { wishlist, cartItems, dataDispatch } = useData();
+  const { token, setToken } = useAuth();
   const {
     productsState: { products },
     productsDispatch,
   } = useProducts();
+
   useEffect(() => {
     (async () => {
-      if (cartItems.length === 0) {
-        const fetchedCartItems = await getCartData();
-        dataDispatch({ type: SET_CART_ITEMS, fetchedCartItems });
-      }
-      if (wishlist.length === 0) {
-        const fetchedWishlist = await getWishlistData();
-        dataDispatch({ type: SET_WISHLIST_ITEMS, fetchedWishlist });
-      }
       if (products.length === 0) {
         const fetchedProducts = await getProductsData();
         productsDispatch({ type: SET_PRODUCTS, products: fetchedProducts });
+      }
+      if (localStorage) {
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+          const response = await validateTokenService(storedToken);
+          if (response?.message === "success") {
+            setToken(storedToken);
+          }
+        }
+      }
+      if (token && cartItems.length === 0) {
+        const fetchedCartItems = await getCartData();
+        dataDispatch({ type: SET_CART_ITEMS, fetchedCartItems });
+      }
+      if (token && wishlist.length === 0) {
+        const fetchedWishlist = await getWishlistData();
+        dataDispatch({ type: SET_WISHLIST_ITEMS, fetchedWishlist });
       }
     })();
   }, []);
