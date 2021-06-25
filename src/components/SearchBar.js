@@ -18,7 +18,9 @@ export const SearchBar = () => {
 
   const clearSearchResults = () => {
     setSearchString("");
-    navigate(prevLocation);
+    if (location.pathname === "/search") {
+      navigate(prevLocation);
+    }
   };
 
   return (
